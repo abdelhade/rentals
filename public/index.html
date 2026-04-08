@@ -1,95 +1,355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium Suit Rentals</title>
+  <title>Luxe Suits — ERP</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="css/layout.css">
 </head>
 <body>
-  
-  <header>
-    <div class="header-container">
+
+  <div class="topbar">
+    <button class="hamburger" id="hamburger">&#9776;</button>
+    <span class="topbar-logo">Luxe <span>Suits</span></span>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
       <h1>Luxe <span>Suits</span></h1>
-      <p>Premium Rental Management</p>
+      <p>ERP System</p>
     </div>
-  </header>
+    <nav class="sidebar-nav">
 
-  <!-- Tab Navigation -->
-  <nav class="tabs">
-    <ul>
-      <li class="tab" data-target="#customersSection">Customers</li>
-      <li class="tab" data-target="#suppliersSection">Suppliers</li>
-      <li class="tab" data-target="#itemsSection">Items</li>
-      <li class="tab" data-target="#rentalsSection">Active Rentals</li>
-    </ul>
-  </nav>
+      <!-- Accordion: إدخال البيانات -->
+      <div class="acc-group open">
+        <div class="acc-header">
+          <span><span class="nav-icon">🗄️</span> إدخال البيانات</span>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <a class="nav-item active" data-target="#customersSection"><span class="nav-icon">👥</span> عملاء</a>
+          <a class="nav-item" data-target="#suppliersSection"><span class="nav-icon">🏭</span> موردين</a>
+          <a class="nav-item" data-target="#categoriesSection"><span class="nav-icon">🗂️</span> مجموعات الأصناف</a>
+          <a class="nav-item" data-target="#warehousesSection"><span class="nav-icon">🏪</span> صناديق / مخازن</a>
+          <a class="nav-item" data-target="#productsSection"><span class="nav-icon">📦</span> أصناف</a>
+          <a class="nav-item" data-target="#usersSection"><span class="nav-icon">👤</span> مستخدمين</a>
+          <a class="nav-item" data-target="#employeesSection"><span class="nav-icon">🧑‍💼</span> موظفين</a>
+        </div>
+      </div>
 
-  <main>
-    <!-- Dashboard Sections -->
-    <section id="suitsSection" class="dashboard-section">
-      <div class="section-header">
-        <h2>Available Collections</h2>
+      <!-- Accordion: العمليات -->
+      <div class="acc-group">
+        <div class="acc-header">
+          <span><span class="nav-icon">⚡</span> العمليات</span>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <a class="nav-item" data-target="#purchasesSection"><span class="nav-icon">🛒</span> مشتريات</a>
+          <a class="nav-item" data-target="#salesSection"><span class="nav-icon">💰</span> مبيعات</a>
+          <a class="nav-item" data-target="#rentalsSection"><span class="nav-icon">👔</span> إيجار بدل</a>
+          <a class="nav-item nav-link-page" data-href="/item-rental.html"><span class="nav-icon">🏷️</span> إيجار صنف</a>
+          <a class="nav-item" data-target="#receiptsSection"><span class="nav-icon">📥</span> سند قبض</a>
+          <a class="nav-item" data-target="#paymentsSection"><span class="nav-icon">📤</span> سند دفع</a>
+        </div>
       </div>
-      <div class="suits-grid" id="suitsGrid">
-        <!-- Rendered by jQuery -->
-      </div>
-    </section>
 
-    <section id="rentalsSection" class="dashboard-section" style="display:none;">
-      <div class="section-header">
-        <h2>Active Rentals Dashboard</h2>
-      </div>
-      <div class="table-container">
-        <table id="rentalsTable">
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Suit Item</th>
-              <th>Dates</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rendered by jQuery -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+      <!-- Standalone items -->
+      <a class="nav-item nav-item-standalone" data-target="#reportsSection"><span class="nav-icon">📊</span> تقارير</a>
+      <a class="nav-item nav-item-standalone" data-target="#settingsSection"><span class="nav-icon">⚙️</span> إعدادات</a>
 
-  <!-- Booking Modal -->
-  <div class="modal-overlay" id="bookingModal">
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logoutBtn"><span>⎋</span> تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <div class="main-wrapper">
+    <main class="main-content">
+
+      <!-- ══ CUSTOMERS ══ -->
+      <section id="customersSection" class="dashboard-section">
+        <div class="page-header">
+          <h2>العملاء</h2>
+          <button class="btn" id="addCustomerBtn" style="width:auto;padding:10px 24px;">+ إضافة عميل</button>
+        </div>
+        <div class="table-container">
+          <table id="customersTable">
+            <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الرصيد</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ SUPPLIERS ══ -->
+      <section id="suppliersSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>الموردين</h2>
+          <button class="btn" id="addSupplierBtn" style="width:auto;padding:10px 24px;">+ إضافة مورد</button>
+        </div>
+        <div class="table-container">
+          <table id="suppliersTable">
+            <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>العنوان</th><th>الرصيد</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ CATEGORIES ══ -->
+      <section id="categoriesSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>مجموعات الأصناف</h2>
+          <button class="btn" id="addCategoryBtn" style="width:auto;padding:10px 24px;">+ إضافة مجموعة</button>
+        </div>
+        <div class="table-container">
+          <table id="categoriesTable">
+            <thead><tr><th>الاسم</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ WAREHOUSES ══ -->
+      <section id="warehousesSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>الصناديق / المخازن</h2>
+          <button class="btn" id="addWarehouseBtn" style="width:auto;padding:10px 24px;">+ إضافة صندوق</button>
+        </div>
+        <div class="table-container">
+          <table id="warehousesTable">
+            <thead><tr><th>الاسم</th><th>الموقع</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ PRODUCTS ══ -->
+      <section id="productsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>الأصناف</h2>
+          <button class="btn" id="addProductBtn" style="width:auto;padding:10px 24px;">+ إضافة صنف</button>
+        </div>
+        <div class="table-container">
+          <table id="productsTable">
+            <thead><tr><th>الاسم</th><th>SKU</th><th>المجموعة</th><th>سعر التكلفة</th><th>سعر البيع</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ USERS ══ -->
+      <section id="usersSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>المستخدمين</h2>
+          <button class="btn" id="addUserBtn" style="width:auto;padding:10px 24px;">+ إضافة مستخدم</button>
+        </div>
+        <div class="table-container">
+          <table id="usersTable">
+            <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>تاريخ الإضافة</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ EMPLOYEES ══ -->
+      <section id="employeesSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>الموظفين</h2>
+          <button class="btn" id="addEmployeeBtn" style="width:auto;padding:10px 24px;">+ إضافة موظف</button>
+        </div>
+        <div class="table-container">
+          <table id="employeesTable">
+            <thead>
+              <tr><th>الاسم</th><th>المسمى الوظيفي</th><th>الهاتف</th><th>الراتب</th><th>تاريخ التعيين</th><th>الحالة</th><th>إجراءات</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ PURCHASES ══ -->
+      <section id="purchasesSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>المشتريات</h2>
+          <button class="btn" id="addPurchaseBtn" style="width:auto;padding:10px 24px;">+ فاتورة مشتريات</button>
+        </div>
+        <div class="table-container">
+          <table id="purchasesTable">
+            <thead><tr><th>المورد</th><th>التاريخ</th><th>الإجمالي</th><th>المدفوع</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ SALES ══ -->
+      <section id="salesSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>المبيعات</h2>
+          <button class="btn" id="addSaleBtn" style="width:auto;padding:10px 24px;">+ فاتورة مبيعات</button>
+        </div>
+        <div class="table-container">
+          <table id="salesTable">
+            <thead><tr><th>العميل</th><th>التاريخ</th><th>الإجمالي</th><th>المدفوع</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ RENTALS ══ -->
+      <section id="rentalsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header"><h2>إيجار البدل</h2></div>
+        <div class="suits-grid" id="suitsGrid"></div>
+        <div class="table-container" style="margin-top:30px;">
+          <table id="rentalsTable">
+            <thead><tr><th>العميل</th><th>البدلة</th><th>الفترة</th><th>الإجمالي</th><th>الحالة</th><th>تغيير الحالة</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ RECEIPTS ══ -->
+      <section id="receiptsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>سندات القبض</h2>
+          <button class="btn" id="addReceiptBtn" style="width:auto;padding:10px 24px;">+ سند قبض</button>
+        </div>
+        <div class="table-container">
+          <table id="receiptsTable">
+            <thead><tr><th>العميل</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ PAYMENTS ══ -->
+      <section id="paymentsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header">
+          <h2>سندات الدفع</h2>
+          <button class="btn" id="addPaymentBtn" style="width:auto;padding:10px 24px;">+ سند دفع</button>
+        </div>
+        <div class="table-container">
+          <table id="paymentsTable">
+            <thead><tr><th>المورد</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظات</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ REPORTS ══ -->
+      <section id="reportsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header"><h2>التقارير</h2></div>
+        <div class="stats-grid" id="summaryCards"></div>
+        <div class="page-header" style="margin-top:36px;"><h2>تقرير المخزون</h2></div>
+        <div class="table-container">
+          <table id="stockTable">
+            <thead><tr><th>الصنف</th><th>المجموعة</th><th>المخزن</th><th>الكمية</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ SETTINGS ══ -->
+      <section id="settingsSection" class="dashboard-section" style="display:none;">
+        <div class="page-header"><h2>الإعدادات</h2></div>
+        <div class="settings-card">
+          <h3>بيانات النظام</h3>
+          <div class="form-group"><label>اسم الشركة</label><input type="text" id="companyName" value="Luxe Suits"></div>
+          <div class="form-group"><label>كلمة مرور المدير</label><input type="password" id="adminPass" placeholder="••••••••"></div>
+          <button class="submit-btn" style="width:auto;padding:12px 30px;" onclick="alert('تم الحفظ')">حفظ الإعدادات</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══ MODALS ══ -->
+
+  <!-- Generic Entity Modal -->
+  <div class="modal-overlay" id="entityModal">
     <div class="modal">
-      <button class="close-btn" id="closeModal">&times;</button>
-      <h2>Book a Suit</h2>
-      <form id="bookingForm">
-        <input type="hidden" id="suitItemId">
+      <button class="close-btn" id="closeEntityModal">&times;</button>
+      <h2 id="entityModalTitle"></h2>
+      <div class="error-msg" id="entityErrorMsg"></div>
+      <form id="entityForm"></form>
+    </div>
+  </div>
+
+  <!-- Purchase / Sale Invoice Modal -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal" style="max-width:650px;">
+      <button class="close-btn" id="closeInvoiceModal">&times;</button>
+      <h2 id="invoiceModalTitle">فاتورة</h2>
+      <div class="error-msg" id="invoiceErrorMsg"></div>
+      <form id="invoiceForm">
+        <div id="invoicePartyField"></div>
         <div class="form-group">
-          <label>User ID (Mock)</label>
-          <input type="text" id="userId" value="75494725-97f4-4d7e-9b0b-e6dbaeb1ee13" readonly>
+          <label>التاريخ</label>
+          <input type="date" id="invoiceDate">
         </div>
         <div class="form-group">
-          <label>Start Date</label>
-          <input type="datetime-local" id="startDate" required>
+          <label>مدفوع</label>
+          <input type="number" id="invoicePaid" value="0" min="0">
         </div>
         <div class="form-group">
-          <label>End Date</label>
-          <input type="datetime-local" id="endDate" required>
+          <label>ملاحظات</label>
+          <input type="text" id="invoiceNotes">
         </div>
-        <div class="form-group">
-          <label>Deposit Amount ($)</label>
-          <input type="number" id="depositAmount" value="150" required>
+        <div id="invoiceItems">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <strong style="color:var(--accent-color)">الأصناف</strong>
+            <button type="button" class="icon-btn edit" id="addInvoiceItem">+ صنف</button>
+          </div>
+          <div id="invoiceItemsRows"></div>
         </div>
-        <button type="submit" class="submit-btn" id="submitBookingBtn">Confirm Reservation</button>
+        <div style="text-align:left;margin:16px 0;font-size:1.1rem;color:var(--accent-color);">
+          الإجمالي: <strong id="invoiceTotal">0</strong>
+        </div>
+        <button type="submit" class="submit-btn">حفظ الفاتورة</button>
       </form>
     </div>
   </div>
 
+  <!-- Voucher Modal -->
+  <div class="modal-overlay" id="voucherModal">
+    <div class="modal">
+      <button class="close-btn" id="closeVoucherModal">&times;</button>
+      <h2 id="voucherModalTitle">سند</h2>
+      <div class="error-msg" id="voucherErrorMsg"></div>
+      <form id="voucherForm">
+        <div id="voucherPartyField"></div>
+        <div class="form-group"><label>المبلغ</label><input type="number" id="voucherAmount" min="0.01" step="0.01" required></div>
+        <div class="form-group"><label>التاريخ</label><input type="date" id="voucherDate"></div>
+        <div class="form-group"><label>ملاحظات</label><input type="text" id="voucherNotes"></div>
+        <button type="submit" class="submit-btn">حفظ السند</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+      <button class="close-btn" id="closeBookingModal">&times;</button>
+      <h2>حجز بدلة</h2>
+      <div class="error-msg" id="bookingErrorMsg"></div>
+      <form id="bookingForm">
+        <input type="hidden" id="suitItemId">
+        <div class="form-group">
+          <label>العميل (مستخدم)</label>
+          <select id="bookingUserId" class="action-select" style="width:100%;padding:12px;background:rgba(0,0,0,0.2);border:1px solid var(--border-color);border-radius:6px;color:white;outline:none;font-family:inherit;" required>
+            <option value="">— اختر —</option>
+          </select>
+        </div>
+        <div class="form-group"><label>تاريخ البداية</label><input type="datetime-local" id="startDate" required></div>
+        <div class="form-group"><label>تاريخ النهاية</label><input type="datetime-local" id="endDate" required></div>
+        <div class="form-group"><label>العربون ($)</label><input type="number" id="depositAmount" value="150" required></div>
+        <button type="submit" class="submit-btn" id="submitBookingBtn">تأكيد الحجز</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

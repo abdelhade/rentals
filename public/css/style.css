@@ -11,6 +11,9 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* RTL base */
+body { direction: rtl; text-align: right; }
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-color);
@@ -180,7 +183,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .modal-overlay.active .modal { transform: translateY(0); }
 
 .close-btn {
-  position: absolute; top: 20px; right: 20px;
+  position: absolute; top: 20px; left: 20px;
   background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer;
 }
 .close-btn:hover { color: var(--accent-color); }

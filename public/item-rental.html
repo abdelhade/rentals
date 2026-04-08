@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عملية إيجار صنف</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family:'Inter',sans-serif; background:var(--bg-color); color:var(--text-primary); direction:rtl; }
+
+    /* Top Bar */
+    .inv-topbar {
+      position:sticky; top:0; z-index:100;
+      background:rgba(11,12,16,0.97); border-bottom:1px solid var(--border-color);
+      backdrop-filter:blur(10px);
+      display:flex; align-items:center; justify-content:space-between; padding:14px 28px;
+    }
+    .inv-topbar h1 { font-family:'Playfair Display',serif; font-size:1.3rem; }
+    .inv-topbar h1 span { color:var(--accent-color); }
+    .topbar-actions { display:flex; gap:10px; }
+    .btn-save {
+      background:var(--accent-color); color:var(--bg-color);
+      border:none; padding:10px 28px; border-radius:7px;
+      font-weight:700; cursor:pointer; font-family:inherit; font-size:0.9rem; transition:background 0.2s;
+    }
+    .btn-save:hover { background:var(--accent-hover); }
+    .btn-save:disabled { opacity:0.5; cursor:not-allowed; }
+    .btn-back {
+      background:transparent; color:var(--text-secondary);
+      border:1px solid var(--border-color); padding:10px 20px;
+      border-radius:7px; cursor:pointer; font-family:inherit; font-size:0.9rem; transition:all 0.2s;
+    }
+    .btn-back:hover { border-color:var(--accent-color); color:var(--accent-color); }
+
+    /* Body */
+    .inv-body { padding:28px 28px 200px; max-width:1100px; margin:0 auto; }
+
+    /* Header grid */
+    .inv-header-grid {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:28px;
+    }
+    @media(max-width:700px){ .inv-header-grid{ grid-template-columns:1fr; } }
+
+    .field-group { display:flex; flex-direction:column; gap:6px; }
+    .field-group label {
+      font-size:0.75rem; text-transform:uppercase;
+      letter-spacing:1px; color:var(--text-secondary); font-weight:600;
+    }
+    .field-group input, .field-group select, .field-group textarea {
+      padding:10px 14px; background:rgba(255,255,255,0.04);
+      border:1px solid var(--border-color); border-radius:8px;
+      color:var(--text-primary); font-family:inherit; font-size:0.9rem; outline:none;
+      transition:border-color 0.2s;
+    }
+    .field-group input:focus, .field-group select:focus { border-color:var(--accent-color); }
+    .field-group select option { background:#151a21; }
+
+    /* Days badge */
+    .days-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3);
+      color:var(--accent-color); padding:10px 18px; border-radius:8px;
+      font-weight:700; font-size:1rem; margin-bottom:24px;
+    }
+
+    /* Items table */
+    .items-section h3 { font-family:'Playfair Display',serif; color:var(--accent-color); font-size:1rem; margin-bottom:12px; }
+    .items-table-wrap { overflow-x:auto; }
+    table.inv-table { width:100%; border-collapse:collapse; }
+    table.inv-table thead th {
+      background:rgba(212,175,55,0.08); color:var(--text-secondary);
+      font-size:0.75rem; text-transform:uppercase; letter-spacing:1px;
+      padding:12px 10px; text-align:right; border-bottom:1px solid var(--border-color); white-space:nowrap;
+    }
+    table.inv-table thead th:first-child { width:48px; text-align:center; }
+    table.inv-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); }
+    table.inv-table tbody tr:hover td { background:rgba(255,255,255,0.02); }
+    table.inv-table td { padding:8px 6px; vertical-align:middle; }
+    table.inv-table td:first-child { text-align:center; color:var(--text-secondary); font-size:0.85rem; }
+
+    .td-input {
+      width:100%; padding:8px 10px; background:rgba(255,255,255,0.04);
+      border:1px solid transparent; border-radius:6px; color:var(--text-primary);
+      font-family:inherit; font-size:0.88rem; outline:none; transition:border-color 0.2s, background 0.2s;
+    }
+    .td-input:focus { border-color:var(--accent-color); background:rgba(212,175,55,0.05); }
+    .td-input[readonly] { color:var(--accent-color); font-weight:600; cursor:default; background:transparent; border-color:transparent; }
+    .td-select {
+      width:100%; padding:8px 10px; background:rgba(255,255,255,0.04);
+      border:1px solid transparent; border-radius:6px; color:var(--text-primary);
+      font-family:inherit; font-size:0.88rem; outline:none; transition:border-color 0.2s;
+    }
+    .td-select:focus { border-color:var(--accent-color); }
+    .td-select option { background:#151a21; }
+
+    .del-row-btn {
+      background:transparent; border:none; color:rgba(249,65,68,0.5);
+      font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:4px; transition:color 0.2s;
+    }
+    .del-row-btn:hover { color:#f94144; }
+
+    .add-row-btn {
+      margin-top:10px; background:transparent;
+      border:1px dashed var(--border-color); color:var(--text-secondary);
+      padding:9px 20px; border-radius:7px; cursor:pointer;
+      font-family:inherit; font-size:0.85rem; transition:all 0.2s; width:100%;
+    }
+    .add-row-btn:hover { border-color:var(--accent-color); color:var(--accent-color); }
+
+    /* Sticky footer */
+    .inv-footer {
+      position:fixed; bottom:0; left:0; right:0;
+      background:rgba(11,12,16,0.97); border-top:1px solid var(--border-color);
+      backdrop-filter:blur(12px); padding:16px 28px; z-index:100;
+    }
+    .footer-grid {
+      max-width:1100px; margin:0 auto;
+      display:grid; grid-template-columns:repeat(5,1fr); gap:14px; align-items:end;
+    }
+    @media(max-width:800px){ .footer-grid{ grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:500px){ .footer-grid{ grid-template-columns:repeat(2,1fr); } }
+
+    .footer-field { display:flex; flex-direction:column; gap:5px; }
+    .footer-field label {
+      font-size:0.7rem; text-transform:uppercase;
+      letter-spacing:1px; color:var(--text-secondary); font-weight:600;
+    }
+    .footer-field input, .footer-field select {
+      padding:9px 12px; background:rgba(255,255,255,0.05);
+      border:1px solid var(--border-color); border-radius:7px;
+      color:var(--text-primary); font-family:inherit; font-size:0.9rem; outline:none; transition:border-color 0.2s;
+    }
+    .footer-field input:focus { border-color:var(--accent-color); }
+    .footer-field input[readonly] { color:var(--accent-color); font-weight:700; background:rgba(212,175,55,0.06); cursor:default; }
+
+    /* Toast */
+    .toast {
+      position:fixed; top:70px; left:50%; transform:translateX(-50%);
+      background:rgba(249,65,68,0.15); border:1px solid rgba(249,65,68,0.4);
+      color:#f94144; padding:12px 24px; border-radius:8px; font-size:0.9rem; z-index:999; display:none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="inv-topbar">
+    <h1>Luxe <span>Suits</span> — عملية إيجار صنف</h1>
+    <div class="topbar-actions">
+      <button class="btn-back" id="backBtn">← رجوع</button>
+      <button class="btn-save" id="saveBtn">💾 حفظ العملية</button>
+    </div>
+  </div>
+
+  <div class="inv-body">
+
+    <!-- Header -->
+    <div class="inv-header-grid">
+      <div class="field-group">
+        <label>العميل *</label>
+        <select id="customerId"><option value="">— اختر العميل —</option></select>
+      </div>
+      <div class="field-group">
+        <label>الموظف</label>
+        <select id="employeeId"><option value="">— اختر الموظف —</option></select>
+      </div>
+      <div class="field-group">
+        <label>رقم العملية</label>
+        <input type="text" id="rentalNo" placeholder="تلقائي">
+      </div>
+      <div class="field-group">
+        <label>تاريخ البداية *</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="field-group">
+        <label>تاريخ النهاية *</label>
+        <input type="date" id="endDate">
+      </div>
+      <div class="field-group">
+        <label>ملاحظات</label>
+        <input type="text" id="notes" placeholder="ملاحظات اختيارية">
+      </div>
+    </div>
+
+    <div class="days-badge" id="daysBadge">
+      <span>📅</span> <span id="daysCount">0</span> يوم
+    </div>
+
+    <!-- Items -->
+    <div class="items-section">
+      <h3>الأصناف المؤجرة</h3>
+      <div class="items-table-wrap">
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th style="min-width:220px">الصنف</th>
+              <th style="min-width:90px">الكمية</th>
+              <th style="min-width:120px">سعر اليوم</th>
+              <th style="min-width:80px">الأيام</th>
+              <th style="min-width:120px">الإجمالي</th>
+              <th style="width:40px"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody"></tbody>
+        </table>
+      </div>
+      <button class="add-row-btn" id="addRowBtn">+ إضافة صنف</button>
+    </div>
+
+  </div>
+
+  <!-- Sticky Footer -->
+  <div class="inv-footer">
+    <div class="footer-grid">
+      <div class="footer-field">
+        <label>إجمالي الإيجار</label>
+        <input type="text" id="fTotal" readonly value="0.00">
+      </div>
+      <div class="footer-field">
+        <label>خصم %</label>
+        <input type="number" id="discountPct" value="0" min="0" max="100" step="0.01">
+      </div>
+      <div class="footer-field">
+        <label>قيمة الخصم</label>
+        <input type="number" id="discountAmt" value="0" min="0" step="0.01">
+      </div>
+      <div class="footer-field">
+        <label>المدفوع</label>
+        <input type="number" id="paid" value="0" min="0" step="0.01">
+      </div>
+      <div class="footer-field">
+        <label>الباقي</label>
+        <input type="text" id="fRemaining" readonly value="0.00">
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/item-rental.js"></script>
+</body>
+</html>
