@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Suit Rentals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  
+  <header>
+    <div class="header-container">
+      <h1>Luxe <span>Suits</span></h1>
+      <p>Premium Rental Management</p>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tabs">
+    <ul>
+      <li class="tab" data-target="#customersSection">Customers</li>
+      <li class="tab" data-target="#suppliersSection">Suppliers</li>
+      <li class="tab" data-target="#itemsSection">Items</li>
+      <li class="tab" data-target="#rentalsSection">Active Rentals</li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Dashboard Sections -->
+    <section id="suitsSection" class="dashboard-section">
+      <div class="section-header">
+        <h2>Available Collections</h2>
+      </div>
+      <div class="suits-grid" id="suitsGrid">
+        <!-- Rendered by jQuery -->
+      </div>
+    </section>
+
+    <section id="rentalsSection" class="dashboard-section" style="display:none;">
+      <div class="section-header">
+        <h2>Active Rentals Dashboard</h2>
+      </div>
+      <div class="table-container">
+        <table id="rentalsTable">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Suit Item</th>
+              <th>Dates</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rendered by jQuery -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+      <button class="close-btn" id="closeModal">&times;</button>
+      <h2>Book a Suit</h2>
+      <form id="bookingForm">
+        <input type="hidden" id="suitItemId">
+        <div class="form-group">
+          <label>User ID (Mock)</label>
+          <input type="text" id="userId" value="75494725-97f4-4d7e-9b0b-e6dbaeb1ee13" readonly>
+        </div>
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="datetime-local" id="startDate" required>
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="datetime-local" id="endDate" required>
+        </div>
+        <div class="form-group">
+          <label>Deposit Amount ($)</label>
+          <input type="number" id="depositAmount" value="150" required>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBookingBtn">Confirm Reservation</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

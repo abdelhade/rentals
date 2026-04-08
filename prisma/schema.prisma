@@ -1,0 +1,99 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String
+  
+  measurements MeasurementProfile?
+  orders       RentalOrder[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MeasurementProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  shoulder  Float
+  chest     Float
+  waist     Float
+  hips      Float
+  inseam    Float
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  
+  suitModels SuitModel[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model SuitModel {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  basePrice   Float
+  
+  items       SuitItem[] // One Suit Model can have many individual Items (SKUs)
+  
+  supplierId  String
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model SuitItem {
+  id          String     @id @default(uuid())
+  sku         String     @unique
+  suitModelId String
+  suitModel   SuitModel  @relation(fields: [suitModelId], references: [id])
+  size        String
+  status      String     @default("AVAILABLE") // Enum replaced with String
+  
+  orders      RentalOrder[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model RentalOrder {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  suitItemId      String
+  suitItem        SuitItem      @relation(fields: [suitItemId], references: [id])
+  
+  startDate       DateTime
+  endDate         DateTime
+  
+  depositStatus   String        @default("PENDING") // Enum replaced with String
+  depositAmount   Float
+  
+  orderStatus     String        @default("BOOKED") // Enum replaced with String
+  totalPrice      Float
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
