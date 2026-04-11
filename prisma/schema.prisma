@@ -8,6 +8,22 @@ generator client {
 }
 
 // ══════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════
+
+model SystemUser {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  email     String   @unique
+  phone     String
+  password  String
+  role      String   @default("CASHIER") // ADMIN | MANAGER | CASHIER
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ══════════════════════════════════════
 //  MASTER DATA
 // ══════════════════════════════════════
 
@@ -100,6 +116,7 @@ model Product {
   unit        String   @default("piece")
   costPrice   Float    @default(0)
   salePrice   Float    @default(0)
+  image       String?
   categoryId  String?
   category    Category? @relation(fields: [categoryId], references: [id])
   stocks      Stock[]

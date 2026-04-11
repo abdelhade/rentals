@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { prisma } from '../prisma';
 
+async function generateSku(): Promise<string> {
+  const count = await prisma.product.count();
+  return `PRD-${String(count + 1).padStart(5, '0')}`;
+}
+
 export class ProductController {
   public getAll = async (req: Request, res: Response) => {
     try {
@@ -14,9 +19,15 @@ export class ProductController {
 
   public create = async (req: Request, res: Response) => {
     try {
-      const { name, description, sku, unit, costPrice, salePrice, categoryId } = req.body;
-      if (!name || !sku) return res.status(400).json({ success: false, message: 'name and sku are required' });
-      const data = await prisma.product.create({ data: { name, description, sku, unit, costPrice: +costPrice || 0, salePrice: +salePrice || 0, categoryId } });
+      const { name, description, sku, unit, costPrice, salePrice, categoryId, image } = req.body;
+      if (!name) return res.status(400).json({ success: false, message: 'name is required' });
+
+      // Auto-generate SKU if not provided
+      const finalSku = sku?.trim() || await generateSku();
+
+      const data = await prisma.product.create({
+        data: { name, description, sku: finalSku, unit, costPrice: +costPrice || 0, salePrice: +salePrice || 0, categoryId: categoryId || null, image: image || null }
+      });
       return res.status(201).json({ success: true, data });
     } catch (e: any) {
       if (e.code === 'P2002') return res.status(409).json({ success: false, message: 'SKU already exists' });
@@ -26,10 +37,10 @@ export class ProductController {
 
   public update = async (req: Request, res: Response) => {
     try {
-      const { name, description, sku, unit, costPrice, salePrice, categoryId } = req.body;
+      const { name, description, sku, unit, costPrice, salePrice, categoryId, image } = req.body;
       const data = await prisma.product.update({
         where: { id: req.params.id },
-        data: { name, description, sku, unit, costPrice: +costPrice, salePrice: +salePrice, categoryId }
+        data: { name, description, sku, unit, costPrice: +costPrice, salePrice: +salePrice, categoryId: categoryId || null, image: image ?? undefined }
       });
       return res.json({ success: true, data });
     } catch (e: any) {

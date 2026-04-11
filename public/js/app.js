@@ -74,8 +74,15 @@ $(document).ready(function () {
   function entityAjax(method, url, data, onSuccess) {
     $.ajax({
       url, method, contentType: 'application/json', data: JSON.stringify(data),
-      success: function (res) { if (res.success) { $('#entityModal').removeClass('active'); onSuccess(); } },
-      error: function (xhr) { $('#entityErrorMsg').text(xhr.responseJSON?.message || 'خطأ').show(); }
+      success: function (res) {
+        if (res.success) { $('#entityModal').removeClass('active'); onSuccess(); }
+        else { $('#entityErrorMsg').text(res.message || 'حدث خطأ غير متوقع').show(); }
+      },
+      error: function (xhr) {
+        const json = xhr.responseJSON;
+        const msg = json?.message || json?.error || (xhr.status ? `خطأ ${xhr.status}: ${xhr.statusText}` : 'تعذر الاتصال بالخادم');
+        $('#entityErrorMsg').text(msg).show();
+      }
     });
   }
 
@@ -197,16 +204,21 @@ $(document).ready(function () {
   function fetchProducts() {
     $.get('/api/products', function (res) {
       const $b = $('#productsTable tbody').empty();
-      if (!res.data?.length) { $b.append(emptyRow(6, 'لا توجد أصناف')); return; }
+      if (!res.data?.length) { $b.append(emptyRow(7, 'لا توجد أصناف')); return; }
       res.data.forEach(function (p) {
+        const img = p.image
+          ? `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid var(--border-color);">`
+          : `<div style="width:40px;height:40px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:1.1rem;">📦</div>`;
         $b.append(`<tr>
+          <td>${img}</td>
           <td>${p.name}</td><td>${p.sku}</td><td>${p.category?.name||'—'}</td>
           <td>${fmtMoney(p.costPrice)}</td><td>${fmtMoney(p.salePrice)}</td>
           <td>
             <button class="icon-btn edit" data-type="product" data-id="${p.id}"
               data-name="${p.name}" data-sku="${p.sku}" data-unit="${p.unit}"
               data-costprice="${p.costPrice}" data-saleprice="${p.salePrice}"
-              data-categoryid="${p.categoryId||''}">تعديل</button>
+              data-categoryid="${p.categoryId||''}"
+              data-image="${p.image||''}">تعديل</button>
             <button class="icon-btn del" data-url="/api/products/${p.id}" data-cb="fetchProducts">حذف</button>
           </td></tr>`);
       });
@@ -220,9 +232,10 @@ $(document).ready(function () {
   function buildProductModal(d) {
     $.get('/api/categories', function (catRes) {
       const catOpts = (catRes.data||[]).map(c => `<option value="${c.id}" ${d.categoryid===c.id?'selected':''}>${c.name}</option>`).join('');
+      const imgPreview = d.image ? `<img id="imgPreview" src="${d.image}" style="width:100%;max-height:160px;object-fit:contain;border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);">` : `<div id="imgPreview" style="display:none"></div>`;
       openEntityModal(d.id ? 'تعديل صنف' : 'إضافة صنف', `
         <div class="form-group"><label>الاسم *</label><input id="ef_name" value="${d.name||''}" required></div>
-        <div class="form-group"><label>SKU *</label><input id="ef_sku" value="${d.sku||''}" required></div>
+        <div class="form-group"><label>SKU <span style="color:var(--text-secondary);font-size:0.75rem">(اختياري — يتولد تلقائياً)</span></label><input id="ef_sku" value="${d.sku||''}" placeholder="PRD-00001"></div>
         <div class="form-group"><label>الوحدة</label><input id="ef_unit" value="${d.unit||'piece'}"></div>
         <div class="form-group"><label>سعر التكلفة</label><input type="number" id="ef_costPrice" value="${d.costprice||0}" min="0"></div>
         <div class="form-group"><label>سعر البيع</label><input type="number" id="ef_salePrice" value="${d.saleprice||0}" min="0"></div>
@@ -230,10 +243,33 @@ $(document).ready(function () {
           <select id="ef_categoryId" class="action-select" style="width:100%;padding:10px;background:rgba(0,0,0,0.2);border:1px solid var(--border-color);border-radius:6px;color:white;">
             <option value="">— بدون مجموعة —</option>${catOpts}
           </select>
+        </div>
+        <div class="form-group">
+          <label>صورة الصنف</label>
+          ${imgPreview}
+          <input type="file" id="ef_imageFile" accept="image/*" style="padding:6px;cursor:pointer;">
+          <input type="hidden" id="ef_image" value="${d.image||''}">
         </div>`, function () {
-        const payload = { name: $('#ef_name').val(), sku: $('#ef_sku').val(), unit: $('#ef_unit').val(),
-          costPrice: $('#ef_costPrice').val(), salePrice: $('#ef_salePrice').val(), categoryId: $('#ef_categoryId').val() || null };
+        const payload = {
+          name: $('#ef_name').val(), sku: $('#ef_sku').val() || null,
+          unit: $('#ef_unit').val(), costPrice: $('#ef_costPrice').val(),
+          salePrice: $('#ef_salePrice').val(), categoryId: $('#ef_categoryId').val() || null,
+          image: $('#ef_image').val() || null
+        };
         entityAjax(d.id ? 'PUT' : 'POST', d.id ? `/api/products/${d.id}` : '/api/products', payload, fetchProducts);
+      });
+
+      // Image preview on file select
+      $('#entityModal').off('change', '#ef_imageFile').on('change', '#ef_imageFile', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const src = e.target.result;
+          $('#ef_image').val(src);
+          $('#imgPreview').attr('src', src).show().css('display','block');
+        };
+        reader.readAsDataURL(file);
       });
     });
   }
